@@ -1,8 +1,9 @@
 import koma.*
+import kotlin.random.Random
 
 
 fun main() {
-    val prices = start(16, 7, 77).toDoubleArray()
+    val prices = start(17, 7, 77).drop(2).toDoubleArray()
     figure(1)
     plot(prices)
     xlabel("Time")
@@ -11,22 +12,26 @@ fun main() {
 
 }
 
-private fun start(d: Int, h: Int, r: Int, steps: Int = 1000): List<Double> {
+private fun start(d: Int, h: Int, r: Int, steps: Int = 100): List<Double> {
     val agents = ArrayList<Agent>()
     val blockedAgents = hashSetOf<Agent>()
     for (i in 0 until d) {
-        agents.add(DefaultAgent((1000..2000).random().toDouble(), (10..20).random()))
+        agents.add(DefaultAgent((80..120).random().toDouble()))
     }
     for (i in 0 until h) {
-        agents.add(HerdAgent((1000..2000).random().toDouble(), (10..20).random()))
+        agents.add(HerdAgent((80..120).random().toDouble()))
     }
     for (i in 0 until r) {
-        agents.add(SemiRationalAgent((1000..2000).random().toDouble(), (10..20).random()))
+        agents.add(SemiRationalAgent((80..120).random().toDouble()))
     }
     agents.shuffle()
-    Market.averagePrice = 100.0
+    Market.averagePrice = 10.0
     for (i in 0 until steps) {
         for (agent in agents) {
+//            if (Random.nextInt(0, 3) == 0) {
+//             Market.bids.removeIf { o -> o.agent == agent }
+//             Market.asks.removeIf { o -> o.agent == agent }
+//            }
             if (!blockedAgents.contains(agent)) {
                 val order = agent.makeDeal()
                 if (order != null) {

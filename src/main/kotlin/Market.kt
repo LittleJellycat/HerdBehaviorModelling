@@ -10,14 +10,25 @@ object Market {
     fun execute(type: BidAsk, price: Double, blocked: HashSet<Agent>, agent: Agent) {
         if (type == BidAsk.BID) {
             if (!asks.isEmpty() && asks.peek().price >= price) {
-                blocked.remove(asks.poll().agent)
+                val counterparty = asks.poll()
+                blocked.remove(counterparty.agent)
+                agent.addAmount(-1)
+                agent.addMoney(price)
+                counterparty.agent.addMoney(-price)
+                counterparty.agent.addAmount(1)
             } else {
                 bids.offer(Operation(price, agent))
                 blocked.add(agent)
             }
         } else {
             if (!bids.isEmpty() && bids.peek().price <= price) {
+                val counterparty = bids.poll()
                 blocked.remove(bids.poll().agent)
+                blocked.remove(counterparty.agent)
+                agent.addAmount(1)
+                agent.addMoney(-price)
+                counterparty.agent.addMoney(price)
+                counterparty.agent.addAmount(-1)
             } else {
                 asks.offer(Operation(price, agent))
                 blocked.add(agent)

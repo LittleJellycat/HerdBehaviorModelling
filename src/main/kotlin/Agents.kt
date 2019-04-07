@@ -1,4 +1,6 @@
 interface Agent {
+    fun addMoney(money: Double)
+    fun addAmount(n: Int)
     fun makeDeal(): Pair<BidAsk, Double>?
     fun setPrice(bidAsk: BidAsk): Double {
         return if (bidAsk == BidAsk.BID) {
@@ -24,7 +26,15 @@ enum class BidAsk {
     ASK
 }
 
-class DefaultAgent(var money: Double, var amount: Int) : Agent {
+class DefaultAgent(var money: Double, var amount: Int = 10) : Agent {
+    override fun addAmount(n: Int) {
+        amount += n
+    }
+
+    override fun addMoney(money: Double) {
+        this.money += money
+    }
+
     override fun makeDeal(): Pair<BidAsk, Double>? {
         val type = chooseBidOrAsk()
         val price = setPrice(type)
@@ -53,7 +63,15 @@ class DefaultAgent(var money: Double, var amount: Int) : Agent {
 
 }
 
-class HerdAgent(var money: Double, var amount: Int) : Agent {
+class HerdAgent(var money: Double, var amount: Int = 10) : Agent {
+    override fun addMoney(money: Double) {
+        this.money += money
+    }
+
+    override fun addAmount(n: Int) {
+        amount += n
+    }
+
     override fun makeDeal(): Pair<BidAsk, Double>? {
         val type = chooseBidOrAsk()
         val price = setPrice(type)
@@ -82,7 +100,15 @@ class HerdAgent(var money: Double, var amount: Int) : Agent {
 
 }
 
-class SemiRationalAgent(var money: Double, var amount: Int) : Agent {
+class SemiRationalAgent(var money: Double, var amount: Int = 10) : Agent {
+    override fun addMoney(money: Double) {
+        this.money += money
+    }
+
+    override fun addAmount(n: Int) {
+        amount += n
+    }
+
     override fun makeDeal(): Pair<BidAsk, Double>? {
         val (price1, price2) = Market.historyPrices.takeLast(2)
         val type = when {
