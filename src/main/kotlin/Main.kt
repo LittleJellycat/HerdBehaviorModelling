@@ -1,9 +1,17 @@
-fun main() {
+import koma.*
 
+
+fun main() {
+    val prices = start(16, 7, 77).toDoubleArray()
+    figure(1)
+    plot(prices)
+    xlabel("Time")
+    ylabel("Price")
+    title("????")
 
 }
 
-private fun start(d: Int, h: Int, r: Int, steps: Int = 1000) {
+private fun start(d: Int, h: Int, r: Int, steps: Int = 1000): List<Double> {
     val agents = ArrayList<Agent>()
     val blockedAgents = hashSetOf<Agent>()
     for (i in 0 until d) {
@@ -29,4 +37,5 @@ private fun start(d: Int, h: Int, r: Int, steps: Int = 1000) {
         Market.historyPrices.add(Market.averagePrice)
         Market.averagePrice = (Market.asks.map { it.price }.average() + Market.bids.map { it.price }.average()) / 2
     }
+    return Market.historyPrices
 }

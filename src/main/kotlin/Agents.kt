@@ -9,7 +9,7 @@ interface Agent {
                 maxBid * 1.01
             }
         } else {
-            if (Market.bids.isEmpty()) {
+            if (Market.asks.isEmpty()) {
                 Market.averagePrice
             } else {
                 val minAsk = Market.asks.peek().price
@@ -107,5 +107,4 @@ class SemiRationalAgent(var money: Double, var amount: Int) : Agent {
             }
         }
     }
-
 }

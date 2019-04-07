@@ -2,21 +2,21 @@ import java.util.*
 import kotlin.collections.HashSet
 
 object Market {
-    var averagePrice = 100.0 // default value
+    var averagePrice = 10.0 // default value
     val bids = PriorityQueue<Operation>(Comparator.reverseOrder<Operation>())
     val asks = PriorityQueue<Operation>()
-    val historyPrices = arrayListOf(100.0, 100.0)
+    val historyPrices = arrayListOf(10.0, 10.0)
 
     fun execute(type: BidAsk, price: Double, blocked: HashSet<Agent>, agent: Agent) {
         if (type == BidAsk.BID) {
-            if (asks.peek().price >= price) {
+            if (!asks.isEmpty() && asks.peek().price >= price) {
                 blocked.remove(asks.poll().agent)
             } else {
                 bids.offer(Operation(price, agent))
                 blocked.add(agent)
             }
         } else {
-            if (bids.peek().price <= price) {
+            if (!bids.isEmpty() && bids.peek().price <= price) {
                 blocked.remove(bids.poll().agent)
             } else {
                 asks.offer(Operation(price, agent))
