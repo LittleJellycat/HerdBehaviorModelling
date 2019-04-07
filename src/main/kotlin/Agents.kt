@@ -1,6 +1,5 @@
 interface Agent {
-    fun makeDeal()
-
+    fun makeDeal(): Pair<BidAsk, Double>?
     fun setPrice(bidAsk: BidAsk): Double {
         return if (bidAsk == BidAsk.BID) {
             if (Market.bids.isEmpty()) {
@@ -25,47 +24,88 @@ enum class BidAsk {
     ASK
 }
 
-class DefaultAgent(var money: Double, var amount: Int):Agent {
-    override fun makeDeal() {
-
+class DefaultAgent(var money: Double, var amount: Int) : Agent {
+    override fun makeDeal(): Pair<BidAsk, Double>? {
+        val type = chooseBidOrAsk()
+        val price = setPrice(type)
+        return if (type == BidAsk.BID) {
+            if (amount >= 1) {
+                amount--
+                type to price
+            } else {
+                null
+            }
+        } else {
+            if (money >= price) {
+                money -= price
+                type to price
+            } else {
+                null
+            }
+        }
     }
 
     private fun chooseBidOrAsk(): BidAsk {
         if (Market.asks.size > Market.bids.size) return BidAsk.BID
         if (Market.asks.size < Market.bids.size) return BidAsk.ASK
-        return listOf(BidAsk.BID, BidAsk.ASK).random()
-
+        return BidAsk.values().random()
     }
 
 }
 
 class HerdAgent(var money: Double, var amount: Int) : Agent {
-    override fun makeDeal() {
+    override fun makeDeal(): Pair<BidAsk, Double>? {
         val type = chooseBidOrAsk()
-        if (type==BidAsk.BID && amount > 0){
-
-        } else if (type==BidAsk.ASK && money > 0){
-
+        val price = setPrice(type)
+        return if (type == BidAsk.BID) {
+            if (amount >= 1) {
+                amount--
+                type to price
+            } else {
+                null
+            }
+        } else {
+            if (money >= price) {
+                money -= price
+                type to price
+            } else {
+                null
+            }
         }
     }
 
     private fun chooseBidOrAsk(): BidAsk {
         if (Market.asks.size < Market.bids.size) return BidAsk.BID
         if (Market.asks.size > Market.bids.size) return BidAsk.ASK
-        return listOf(BidAsk.BID, BidAsk.ASK).random()
+        return BidAsk.values().random()
     }
 
 }
 
 class SemiRationalAgent(var money: Double, var amount: Int) : Agent {
-    override fun makeDeal() {
+    override fun makeDeal(): Pair<BidAsk, Double>? {
         val (price1, price2) = Market.historyPrices.takeLast(2)
-        val orderType = when {
+        val type = when {
             price1 < price2 -> BidAsk.ASK
             price1 > price2 -> BidAsk.BID
             else -> listOf(BidAsk.BID, BidAsk.ASK).random()
         }
-
+        val price = setPrice(type)
+        return if (type == BidAsk.BID) {
+            if (amount >= 1) {
+                amount--
+                type to price
+            } else {
+                null
+            }
+        } else {
+            if (money >= price) {
+                money -= price
+                type to price
+            } else {
+                null
+            }
+        }
     }
 
 }
