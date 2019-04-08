@@ -40,14 +40,12 @@ class DefaultAgent(var money: Double, var amount: Int = 10) : Agent {
         val price = setPrice(type)
         return if (type == BidAsk.BID) {
             if (amount >= 1) {
-                amount--
                 type to price
             } else {
                 null
             }
         } else {
             if (money >= price) {
-                money -= price
                 type to price
             } else {
                 null
@@ -114,19 +112,17 @@ class SemiRationalAgent(var money: Double, var amount: Int = 10) : Agent {
         val type = when {
             price1 < price2 -> BidAsk.ASK
             price1 > price2 -> BidAsk.BID
-            else -> listOf(BidAsk.BID, BidAsk.ASK).random()
+            else -> BidAsk.values().random()
         }
         val price = setPrice(type)
         return if (type == BidAsk.BID) {
             if (amount >= 1) {
-                amount--
                 type to price
             } else {
                 null
             }
         } else {
             if (money >= price) {
-                money -= price
                 type to price
             } else {
                 null
