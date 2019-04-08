@@ -4,18 +4,18 @@ interface Agent {
     fun makeDeal(): Pair<BidAsk, Double>?
     fun setPrice(bidAsk: BidAsk): Double {
         return if (bidAsk == BidAsk.BID) {
-            if (Market.bids.isEmpty()) {
-                Market.averagePrice
-            } else {
-                val maxBid = Market.bids.peek().price
-                maxBid * 1.01
-            }
-        } else {
             if (Market.asks.isEmpty()) {
                 Market.averagePrice
             } else {
-                val minAsk = Market.asks.peek().price
-                minAsk * 0.99
+                val maxBid = Market.asks.peek().price
+                maxBid * 1.1
+            }
+        } else {
+            if (Market.bids.isEmpty()) {
+                Market.averagePrice
+            } else {
+                val minAsk = Market.bids.peek().price
+                minAsk * 0.9
             }
         }
     }

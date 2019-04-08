@@ -12,6 +12,7 @@ object Market {
             if (!asks.isEmpty() && asks.peek().price >= price) {
                 val counterparty = asks.poll()
                 blocked.remove(counterparty.agent)
+                blocked.remove(agent)
                 agent.addAmount(-1)
                 agent.addMoney(price)
                 counterparty.agent.addMoney(-price)
@@ -23,8 +24,8 @@ object Market {
         } else {
             if (!bids.isEmpty() && bids.peek().price <= price) {
                 val counterparty = bids.poll()
-                blocked.remove(bids.poll().agent)
                 blocked.remove(counterparty.agent)
+                blocked.remove(agent)
                 agent.addAmount(1)
                 agent.addMoney(-price)
                 counterparty.agent.addMoney(price)

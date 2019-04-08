@@ -1,7 +1,6 @@
 import koma.*
 import kotlin.random.Random
 
-
 fun main() {
     val prices = start(17, 7, 77).drop(2).toDoubleArray()
     figure(1)
@@ -28,10 +27,11 @@ private fun start(d: Int, h: Int, r: Int, steps: Int = 100): List<Double> {
     Market.averagePrice = 10.0
     for (i in 0 until steps) {
         for (agent in agents) {
-//            if (Random.nextInt(0, 3) == 0) {
-//             Market.bids.removeIf { o -> o.agent == agent }
-//             Market.asks.removeIf { o -> o.agent == agent }
-//            }
+            if (Random.nextInt(0, 3) == 0) {
+                Market.bids.removeIf { o -> o.agent == agent }
+                Market.asks.removeIf { o -> o.agent == agent }
+                blockedAgents.remove(agent)
+            }
             if (!blockedAgents.contains(agent)) {
                 val order = agent.makeDeal()
                 if (order != null) {
@@ -42,5 +42,6 @@ private fun start(d: Int, h: Int, r: Int, steps: Int = 100): List<Double> {
         Market.historyPrices.add(Market.averagePrice)
         Market.averagePrice = (Market.asks.map { it.price }.average() + Market.bids.map { it.price }.average()) / 2
     }
+    println(Market.historyPrices)
     return Market.historyPrices
 }
