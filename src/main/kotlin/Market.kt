@@ -2,9 +2,9 @@ import java.util.*
 import kotlin.collections.HashSet
 
 object Market {
+    val bids = PriorityQueue<Operation>()
+    val asks = PriorityQueue<Operation>(Comparator.reverseOrder<Operation>())
     var averagePrice = 10.0 // default value
-    val bids = PriorityQueue<Operation>(Comparator.reverseOrder<Operation>())
-    val asks = PriorityQueue<Operation>()
     val historyPrices = arrayListOf(10.0, 10.0)
 
     fun execute(type: BidAsk, price: Double, blocked: HashSet<Agent>, agent: Agent) {
@@ -39,9 +39,5 @@ object Market {
 }
 
 data class Operation(val price: Double, val agent: Agent) : Comparable<Operation> {
-    override fun compareTo(other: Operation): Int {
-        if (this.price > other.price) return 1
-        if (this.price < other.price) return -1
-        return 0
-    }
+    override fun compareTo(other: Operation): Int = compareValues(this.price, other.price)
 }

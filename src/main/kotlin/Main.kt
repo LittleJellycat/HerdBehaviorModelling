@@ -2,7 +2,7 @@ import koma.*
 import kotlin.random.Random
 
 fun main() {
-    val prices = start(17, 7, 77).drop(2).toDoubleArray()
+    val prices = start(77, 7, 16).drop(2).toDoubleArray()
     figure(1)
     plot(prices)
     xlabel("Time")
@@ -11,28 +11,28 @@ fun main() {
 
 }
 
-private fun start(d: Int, h: Int, r: Int, steps: Int = 100): List<Double> {
-    val agents = ArrayList<Agent>()
+private fun start(
+    stabilizingAgentCount: Int,
+    herdAgentCount: Int,
+    semiRationalAgentCount: Int,
+    steps: Int = 100
+): List<Double> {
+    val agents: List<Agent> = mutableListOf<Agent>().apply {
+        stabilizingAgentCount.repeat {
+            add(StabilizingAgent(Random.nextDouble(80.0, 120.0)))
+        }
+        herdAgentCount.repeat {
+            add(HerdAgent(Random.nextDouble(80.0, 120.0)))
+        }
+        semiRationalAgentCount.repeat {
+            add(SemiRationalAgent(Random.nextDouble(80.0, 120.0)))
+        }
+        shuffle()
+    }
     val blockedAgents = hashSetOf<Agent>()
-    for (i in 0 until d) {
-        agents.add(DefaultAgent((80..120).random().toDouble()))
-    }
-    for (i in 0 until h) {
-        agents.add(HerdAgent((80..120).random().toDouble()))
-    }
-    for (i in 0 until r) {
-        agents.add(SemiRationalAgent((80..120).random().toDouble()))
-    }
-    agents.shuffle()
-    Market.averagePrice = 10.0
-    for (i in 0 until steps) {
+    steps.repeat {
         for (agent in agents) {
-            if (Random.nextInt(0, 3) == 0) {
-                Market.bids.removeIf { o -> o.agent == agent }
-                Market.asks.removeIf { o -> o.agent == agent }
-                blockedAgents.remove(agent)
-            }
-            if (!blockedAgents.contains(agent)) {
+            if (agent !in blockedAgents) {
                 val order = agent.makeDeal()
                 if (order != null) {
                     Market.execute(order.first, order.second, blockedAgents, agent)
@@ -40,8 +40,14 @@ private fun start(d: Int, h: Int, r: Int, steps: Int = 100): List<Double> {
             }
         }
         Market.historyPrices.add(Market.averagePrice)
-        Market.averagePrice = (Market.asks.map { it.price }.average() + Market.bids.map { it.price }.average()) / 2
+        Market.averagePrice = (Market.asks + Market.bids).map { it.price }.avgOr(Market.averagePrice)
     }
     println(Market.historyPrices)
     return Market.historyPrices
+}
+
+fun Iterable<Double>.avgOr(default: Double) = this.average().takeUnless(Double::isNaN) ?: default
+
+inline fun Int.repeat(action: () -> Unit) {
+    for (i in 0 until this) action()
 }
