@@ -2,12 +2,12 @@ import koma.*
 import kotlin.random.Random
 
 fun main() {
-    val prices = start(77, 7, 16).drop(2).toDoubleArray()
+    val prices = start(77, 16, 7).drop(2).toDoubleArray()
     figure(1)
     plot(prices)
     xlabel("Time")
     ylabel("Price")
-    title("????")
+    title("Average asset price")
 
 }
 
