@@ -18,6 +18,7 @@ repositories {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    compile 'org.nield:kotlin-statistics:1.2.1'
     compile group: "com.kyonifer", name:"koma-core-ejml", version: "0.12"
     compile group: "com.kyonifer", name:"koma-plotting", version: "0.12"
 }

@@ -1,6 +1,8 @@
 import koma.*
+import org.nield.kotlinstatistics.median
+import org.nield.kotlinstatistics.variance
 import kotlin.random.Random
-
+ 
 fun main() {
     val prices = start(77, 16, 7).drop(2).toDoubleArray()
     figure(1)
@@ -8,7 +10,8 @@ fun main() {
     xlabel("Time")
     ylabel("Price")
     title("Average asset price")
-
+    println(prices.median())
+    println(prices.variance())
 }
 
 private fun start(
