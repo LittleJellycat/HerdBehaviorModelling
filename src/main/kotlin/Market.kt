@@ -13,10 +13,10 @@ object Market {
                 val counterparty = asks.poll()
                 blocked.remove(counterparty.agent)
                 blocked.remove(agent)
-                agent.addAmount(-1)
-                agent.addMoney(price)
-                counterparty.agent.addMoney(-price)
-                counterparty.agent.addAmount(1)
+                agent.amount--
+                agent.money += price
+                counterparty.agent.money -= price
+                counterparty.agent.amount++
             } else {
                 bids.offer(Operation(price, agent))
                 blocked.add(agent)
@@ -26,10 +26,10 @@ object Market {
                 val counterparty = bids.poll()
                 blocked.remove(counterparty.agent)
                 blocked.remove(agent)
-                agent.addAmount(1)
-                agent.addMoney(-price)
-                counterparty.agent.addMoney(price)
-                counterparty.agent.addAmount(-1)
+                agent.amount++
+                agent.money -= price
+                counterparty.agent.money += price
+                counterparty.agent.amount--
             } else {
                 asks.offer(Operation(price, agent))
                 blocked.add(agent)
